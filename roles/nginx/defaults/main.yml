@@ -1,0 +1,13 @@
+---
+# defaults file for nginx
+nginx_user: 
+  username: "nginx"
+  uid: 2000
+  home: "/var/lib/nginx"
+  shell: "/sbin/nologin"
+  groupname: "nginx"
+  gid: 2000
+
+nginx_config_dir: "/etc/nginx/conf.d"
+nginx_documentroot: "/var/html"
+

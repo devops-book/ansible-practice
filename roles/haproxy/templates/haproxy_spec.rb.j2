@@ -1,0 +1,41 @@
+require 'spec_helper'
+
+describe group("{{ haproxy_user.groupname }}") do
+  it { should exist }
+  it { should have_gid {{ haproxy_user.gid }} }
+end
+
+describe user("{{ haproxy_user.username }}") do
+  it { should exist }
+  it { should belong_to_group '{{ haproxy_user.groupname }}'}
+  it { should have_uid {{ haproxy_user.uid }}}
+  it { should have_home_directory '{{ haproxy_user.home }}'}
+  it { should have_login_shell '{{ haproxy_user.shell }}'}
+end
+
+describe package('haproxy') do
+  it { should be_installed.with_version('{{ haproxy_version }}') }
+end
+
+describe file('{{ haproxy_config_dir }}/haproxy.cfg') do
+  it { should exist }
+  it { should be_file }
+  it { should be_owned_by '{{ haproxy_user.username }}'}
+  it { should be_grouped_into '{{ haproxy_user.groupname }}'}
+  it { should be_mode 644 }
+end
+
+describe service('haproxy') do
+  it { should be_enabled }
+  it { should be_running }
+end
+
+describe port({{ haproxy_port }}) do
+  it { should be_listening }
+end
+
+describe port({{ haproxy_manage_port }}) do
+  it { should be_listening }
+end
+
+

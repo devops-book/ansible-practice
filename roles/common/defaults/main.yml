@@ -1,0 +1,4 @@
+---
+# defaults file for common
+timezone: "Asia/Tokyo"
+selinux_mode: "disabled"

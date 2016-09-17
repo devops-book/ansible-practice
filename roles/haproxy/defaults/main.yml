@@ -1,0 +1,12 @@
+---
+# defaults file for haproxy
+haproxy_user: 
+  username: "haproxy"
+  uid: 2001
+  home: "/var/lib/haproxy"
+  shell: "/sbin/nologin"
+  groupname: "haproxy"
+  gid: 2001
+haproxy_config_dir: "/etc/haproxy"
+haproxy_port: 80
+haproxy_manage_port: 8080

@@ -1,0 +1,49 @@
+global
+    stats socket /var/run/haproxy.sock mode 600 level admin
+    stats timeout 2m
+    chroot      /var/lib/haproxy
+    daemon
+    log         127.0.0.1 daemon
+    pidfile     /var/run/haproxy.pid
+    maxconn     4192
+    user        haproxy
+    group       haproxy
+    quiet
+
+defaults
+    mode                    http
+    log                     global
+    option                  httplog
+    option                  dontlognull
+    option                  http-server-close
+    option                  forwardfor
+    option                  redispatch
+    retries                 3
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          1m
+    timeout server          1m
+    timeout http-keep-alive 10s
+    timeout check           10s
+    maxconn                 3000
+
+listen hastats *:{{ haproxy_manage_port }}
+    mode http
+    maxconn 64
+    timeout connect 5000
+    timeout client 10000
+    timeout server 10000
+    stats enable
+    stats show-legends
+    stats uri /haproxy?hastats
+    stats auth admin:admin
+
+frontend  main *:{{ haproxy_port }}
+    default_backend             www
+
+backend www
+    balance     roundrobin
+    {% for host in groups['webservers'] %}
+    server {{ host }} {{ hostvars[host]['ansible_' + iface].ipv4.address }}:{{ nginx_port }}
+    {% endfor %}

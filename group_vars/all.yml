@@ -1,0 +1,5 @@
+iface: 'eth0'
+nginx_port: 8080
+serverspec_base_dir: "/usr/local/serverspec"
+serverspec_exec_user_name: "jenkins"
+serverspec_exec_user_group: "jenkins"

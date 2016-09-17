@@ -1,0 +1,3 @@
+---
+# file: ci.yml
+- include: ciservers.yml

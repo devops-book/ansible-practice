@@ -1,0 +1,9 @@
+[lbservers]
+lb
+
+[webservers]
+web1
+web2
+
+[ciservers]
+localhost

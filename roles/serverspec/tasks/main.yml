@@ -1,0 +1,18 @@
+---
+# tasks file for serverspec
+- name: install ruby
+  yum: name=ruby-{{ ruby_version }} state=installed
+
+- name: install serverspec
+  gem: name={{ item.key }} version={{ item.value.version }} state=present user_install=no
+  with_dict: "{{ serverspec_gem_list }}"
+
+- name: make serverspec directory
+  file: path={{ serverspec_base_dir }} state=directory mode=0755 owner={{ serverspec_exec_user_name }} group={{ serverspec_exec_user_group }}
+
+- name: put serverspec set
+  copy: src=spec_dir/{{ item }} dest={{ serverspec_base_dir }} owner={{ serverspec_exec_user_name }} group={{ serverspec_exec_user_group }}
+  with_items:
+   - spec
+   - Rakefile
+   - reports

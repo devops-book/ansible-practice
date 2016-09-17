@@ -1,0 +1,21 @@
+---
+# tasks file for haproxy
+- name: create haproxy group
+  group: name={{ haproxy_user.groupname }} state=present gid={{ haproxy_user.gid }}
+
+- name: create haproxy user
+  user: name={{ haproxy_user.username }} state=present shell={{ haproxy_user.shell }} home={{ haproxy_user.home }} group={{ haproxy_user.groupname }} uid={{ haproxy_user.uid }}
+
+- name: install haproxy
+  yum: name=haproxy-{{ haproxy_version }} state=installed 
+
+- name: set custom config
+  template: src=haproxy.cfg.j2 dest={{ haproxy_config_dir }}/haproxy.cfg mode=0644 owner={{ haproxy_user.username }} group={{ haproxy_user.groupname }}
+  notify:
+    - reload haproxy
+
+- name: service haproxy start
+  service: name=haproxy state=started enabled=yes
+
+- name: put spec file of serverspec
+  local_action: template src=haproxy_spec.rb.j2 dest={{ serverspec_base_dir }}/spec/{{ inventory_hostname }}/haproxy_spec.rb

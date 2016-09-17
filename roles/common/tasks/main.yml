@@ -1,0 +1,17 @@
+---
+# tasks file for common
+- name: install epel
+  yum: name=epel-release state=installed
+
+- name: disable selinux
+  selinux: state={{ selinux_mode }}
+
+- name: set timezone
+  command: timedatectl set-timezone {{ timezone }}
+
+- name: make serverspec node directory
+  local_action: file path={{ serverspec_base_dir }}/spec/{{ inventory_hostname }} state=directory mode=0755 owner={{ serverspec_exec_user_name }} group={{ serverspec_exec_user_group }}
+  run_once: true
+
+- name: put spec file of serverspec
+  local_action: template src=common_spec.rb.j2 dest={{ serverspec_base_dir }}/spec/{{ inventory_hostname }}/common_spec.rb

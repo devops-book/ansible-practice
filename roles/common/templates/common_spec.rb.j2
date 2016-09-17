@@ -1,0 +1,10 @@
+require 'spec_helper'
+
+describe selinux do
+  it { should be_{{ selinux_mode }} }
+end
+
+describe command('timedatectl | grep "Time zone"') do
+  its(:stdout) { should match '{{ timezone }}'}
+end
+

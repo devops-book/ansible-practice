@@ -1,0 +1,10 @@
+---
+# file: lbservers.yml
+- hosts: lbservers
+  remote_user: centos
+  become: yes
+  become_user: root
+  gather_facts: no
+  roles:
+    - common
+    - haproxy

@@ -1,0 +1,37 @@
+---
+# tasks file for nginx
+
+- name: create nginx group
+  group: name={{ nginx_user.groupname }} state=present gid={{ nginx_user.gid }}
+
+- name: create nginx user
+  user: name={{ nginx_user.username }} state=present shell={{ nginx_user.shell }} home={{ nginx_user.home }} group={{ nginx_user.groupname }} uid={{ nginx_user.uid }}
+
+- name: install nginx
+  yum: name=nginx-{{ nginx_version }} state=installed 
+
+- name: create directory of document root
+  file: path={{ nginx_documentroot }} state=directory mode=0755 owner={{ nginx_user.username }} group={{ nginx_user.groupname }}
+
+- name: remove default config
+  file: path={{ nginx_config_dir }}/{{ item }} state=absent
+  with_items:
+    - default.conf
+    - ssl.conf
+    - virtual.conf
+  notify:
+    - reload nginx
+
+- name: put custom config
+  template: src=site.conf.j2 dest={{ nginx_config_dir }}/site.conf owner={{ nginx_user.username }} group={{ nginx_user.groupname }} mode=0644
+  notify:
+    - reload nginx
+
+- name: replace index.html
+  template: src=index.html.j2 dest={{ nginx_documentroot }}/index.html owner={{ nginx_user.username }} group={{ nginx_user.groupname }} mode=0644
+
+- name: service nginx start
+  service: name=nginx state=started enabled=yes
+
+- name: put spec file of serverspec
+  local_action: template src=nginx_spec.rb.j2 dest={{ serverspec_base_dir }}/spec/{{ inventory_hostname }}/nginx_spec.rb
