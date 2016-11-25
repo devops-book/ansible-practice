@@ -1,0 +1,25 @@
+---
+# tasks file for elasticsearch
+- name: import elasticsearch gpg key
+  rpm_key: state=present key=https://packages.elastic.co/GPG-KEY-elasticsearch
+
+- name: add elastic repository
+  yum_repository:
+    name: "elasticsearch-2.x"
+    description: Elasticsearch repository for 2.x packages
+    file: elastic
+    baseurl: https://packages.elastic.co/elasticsearch/2.x/centos
+    gpgkey: https://packages.elastic.co/GPG-KEY-elasticsearch
+    gpgcheck: yes
+    enabled: yes
+
+- name: install elasticsearch
+  yum: name=elasticsearch-{{ elasticsearch_version }} state=installed
+
+- name: put elasticsearch config
+  template: src=elasticsearch.yml.j2 dest=/etc/elasticsearch/elasticsearch.yml owner=elasticsearch group=elasticsearch mode=0644
+  notify:
+    - restart elasticsearch
+
+- name: start elasticsearch
+  service: name=elasticsearch state=started enabled=yes

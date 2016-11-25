@@ -1,0 +1,7 @@
+---
+# defaults file for elasticsearch
+elasticsearch_version: "2.3.3"
+elasticsearch_cluster_name: "kibana-es"
+elasticsearch_node_name: "node-es1"
+elasticsearch_network_host: "0.0.0.0"
+elasticsearch_discovery_zen_minimum_master_nodes: 1

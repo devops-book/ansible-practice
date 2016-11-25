@@ -1,0 +1,3 @@
+---
+# defaults file for apache-loggen
+apache_loggen_version: "0.0.4"

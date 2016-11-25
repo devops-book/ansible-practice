@@ -1,0 +1,4 @@
+---
+# tasks file for jdk
+- name: install jdk
+  yum: name=java-{{ jdk_version }}-openjdk-devel state=installed

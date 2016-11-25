@@ -1,8 +1,5 @@
 ---
 # tasks file for serverspec
-- name: install ruby
-  yum: name=ruby-{{ ruby_version }} state=installed
-
 - name: install serverspec
   gem: name={{ item.key }} version={{ item.value.version }} state=present user_install=no
   with_dict: "{{ serverspec_gem_list }}"

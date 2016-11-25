@@ -1,0 +1,25 @@
+---
+# tasks file for logstash
+- name: import elasticsearch gpg key
+  rpm_key: state=present key=https://packages.elastic.co/GPG-KEY-elasticsearch
+
+- name: add elastic repository
+  yum_repository:
+    name: "logstash-2.3"
+    description: Logstash repository for 2.3.x packages
+    file: elastic
+    baseurl: https://packages.elastic.co/logstash/2.3/centos
+    gpgkey: https://packages.elastic.co/GPG-KEY-elasticsearch
+    gpgcheck: yes
+    enabled: yes
+
+- name: install logstash
+  yum: name=logstash-{{ logstash_version }} state=installed
+
+- name: put config for nginx
+  template: src=nginx.conf.j2 dest=/etc/logstash/conf.d/nginx.conf owner=logstash group=logstash mode=0644
+  notify:
+    - reload logstash
+
+- name: start logstash
+  service: name=logstash state=started enabled=yes

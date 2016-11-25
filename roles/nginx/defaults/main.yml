@@ -10,4 +10,3 @@ nginx_user:
 
 nginx_config_dir: "/etc/nginx/conf.d"
 nginx_documentroot: "/var/html"
-

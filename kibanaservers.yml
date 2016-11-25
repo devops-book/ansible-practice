@@ -1,0 +1,13 @@
+---
+# file: webservers.yml
+- hosts: kibanaservers
+  remote_user: centos
+  become: yes
+  become_user: root
+  gather_facts: yes
+  roles:
+    - common
+    - elasticsearch
+    - kibana
+    - logstash
+    - apache-loggen

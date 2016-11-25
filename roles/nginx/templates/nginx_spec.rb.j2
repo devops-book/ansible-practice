@@ -14,7 +14,7 @@ describe user("{{ nginx_user.username }}") do
 end
 
 describe package('nginx') do
-  it { should be_installed.with_version('{{ nginx_version }}') }
+  it { should be_installed }
 end
 
 describe file('{{ nginx_documentroot }}') do

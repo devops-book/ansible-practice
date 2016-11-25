@@ -8,7 +8,7 @@
   user: name={{ nginx_user.username }} state=present shell={{ nginx_user.shell }} home={{ nginx_user.home }} group={{ nginx_user.groupname }} uid={{ nginx_user.uid }}
 
 - name: install nginx
-  yum: name=nginx-{{ nginx_version }} state=installed 
+  yum: name=nginx state=installed 
 
 - name: create directory of document root
   file: path={{ nginx_documentroot }} state=directory mode=0755 owner={{ nginx_user.username }} group={{ nginx_user.groupname }}
@@ -30,8 +30,13 @@
 - name: replace index.html
   template: src=index.html.j2 dest={{ nginx_documentroot }}/index.html owner={{ nginx_user.username }} group={{ nginx_user.groupname }} mode=0644
 
+- name: change permission for nginx log directory
+  file: path={{ nginx_log_dir }} state=directory recurse=yes mode=0755
+
 - name: service nginx start
   service: name=nginx state=started enabled=yes
 
 - name: put spec file of serverspec
   local_action: template src=nginx_spec.rb.j2 dest={{ serverspec_base_dir }}/spec/{{ inventory_hostname }}/nginx_spec.rb
+  tags:
+    - serverspec

@@ -1,0 +1,40 @@
+input {
+  file {
+    path => "{{ nginx_log_dir }}/access.log"
+    start_position => "end"
+  }
+}
+
+filter {
+  grok {
+    match => { "message" => "%{COMBINEDAPACHELOG}( \"%{IP:x_forwarded_for}\")?" }
+    break_on_match => false
+    tag_on_failure => ["_message_parse_failure"]
+  }
+  date {
+    match => ["timestamp", "dd/MMM/YYYY:HH:mm:ss Z"]
+    locale => en
+  }
+  geoip {
+    target => "client_geoip"
+    source => ["x_forwarded_for"]
+  }
+  geoip {
+    target => "geoip"
+    source => ["clientip"]
+  }
+  grok {
+    match => { "request" => "(?<first_path>^/[^/]*)%{GREEDYDATA}$" }
+    tag_on_failure => ["_request_parse_failure"]
+  }
+  useragent {
+    source => "agent"
+    target => "useragent"
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["{{ elasticsearch_host }}:{{ elasticsearch_port }}"]
+  }
+}

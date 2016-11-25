@@ -1,0 +1,10 @@
+---
+# file: green-webservers.yml
+- hosts: tag_Side_green
+  remote_user: centos
+  become: yes
+  become_user: root
+  gather_facts: yes
+  roles:
+    - common
+    - nginx

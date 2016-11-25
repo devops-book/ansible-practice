@@ -8,4 +8,4 @@
   roles:
     - common
     - nginx
-
+    - logstash
